@@ -21,7 +21,7 @@ namespace SpaceInvaders.Services
             try
             {
                 _themePlayer ??= new MediaPlayer { IsLoopingEnabled = true };
-                _themePlayer.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/sounds/theme.ram"));
+                _themePlayer.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/sounds/theme.wav"));
                 _themePlayer.Play();
             }
             catch (Exception ex)

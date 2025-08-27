@@ -2,78 +2,22 @@
     x:Class="SpaceInvaders.Views.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:vm="using:SpaceInvaders.ViewModels"
-    xmlns:local="using:SpaceInvaders.Views">
+    xmlns:local="using:SpaceInvaders.Views"
+    xmlns:controls="using:SpaceInvaders.Views.Controls"
+    Background="Black">
 
-    <Grid Background="Black">
-        <Canvas x:Name="GameCanvas"
-                Background="Black"
-                KeyDown="Page_KeyDown"
-                KeyUp="Page_KeyUp">
+    <Grid>
+        <!-- Damos um nome a cada controle para poder acessá-los no C# -->
+        <!-- A visibilidade não usa mais Binding, será controlada manualmente -->
 
-            <!-- Game UI -->
-            <TextBlock Text="{Binding DisplayScore}"
-                       Canvas.Left="10"
-                       Canvas.Top="10"
-                       Foreground="White"
-                       FontSize="20"
-                       Visibility="{Binding GameState.CurrentState, Converter={StaticResource GameStateToVisibilityConverter}, ConverterParameter=Playing}"/>
+        <controls:MenuControl x:Name="MenuScreen" Visibility="Collapsed"/>
+        <controls:GameCanvasControl x:Name="GameCanvasScreen" Visibility="Collapsed"/>
+        <controls:GameOverControl x:Name="GameOverScreen" Visibility="Collapsed"/>
+        <controls:HighScoresControl x:Name="HighScoresScreen" Visibility="Collapsed"/>
+        <controls:ControlsControl x:Name="ControlsScreen" Visibility="Collapsed"/>
 
-            <!-- Player Ship -->
-            <Rectangle x:Name="PlayerShip"
-                       Width="50" Height="30"
-                       Canvas.Left="{Binding GameState.Player.X}"
-                       Canvas.Top="{Binding GameState.Player.Y}"
-                       Fill="{Binding GameState.Player, Converter={StaticResource EntityToSkinConverter}}"
-                       Visibility="{Binding GameState.CurrentState, Converter={StaticResource GameStateToVisibilityConverter}, ConverterParameter=Playing}"/>
-
-            <!-- Menu Panel -->
-            <StackPanel Canvas.Left="300" Canvas.Top="200"
-                        Spacing="20"
-                        Visibility="{Binding GameState.CurrentState, Converter={StaticResource GameStateToVisibilityConverter}, ConverterParameter=Menu}">
-
-                <TextBlock Text="SPACE" Foreground="White" FontSize="80" FontWeight="Bold" HorizontalAlignment="Center"/>
-                <TextBlock Text="INVADERS" Foreground="LightGreen" FontSize="80" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,-30,0,20"/>
-
-                <Button Content="INICIAR JOGO" FontSize="24" FontWeight="SemiBold"
-                        Command="{Binding StartGameCommand}" HorizontalAlignment="Center"/>
-                <Button Content="PONTUAÇÕES" FontSize="24" FontWeight="SemiBold"
-                        Command="{Binding ShowHighScoresCommand}" HorizontalAlignment="Center"/>
-                <Button Content="CONTROLES" FontSize="24" FontWeight="SemiBold"
-                        Command="{Binding ShowControlsCommand}" HorizontalAlignment="Center"/>
-            </StackPanel>
-
-            <!-- Game Over Panel -->
-            <StackPanel Canvas.Left="250" Canvas.Top="300"
-                        Spacing="20"
-                        Visibility="{Binding GameState.CurrentState, Converter={StaticResource GameStateToVisibilityConverter}, ConverterParameter=GameOver}">
-
-                <TextBlock Text="FIM DE JOGO" Foreground="Red" FontSize="60" FontWeight="Bold" HorizontalAlignment="Center"/>
-                <TextBlock Text="{Binding DisplayScore}" Foreground="White" FontSize="30" HorizontalAlignment="Center"/>
-                <TextBlock Text="DIGITE SEU NOME:" Foreground="White" FontSize="20" HorizontalAlignment="Center"/>
-                <TextBox x:Name="NicknameInput" Width="200" HorizontalAlignment="Center"/>
-                <Button Content="SALVAR PONTUAÇÃO" FontSize="20"
-                        Command="{Binding SaveScoreCommand}"
-                        CommandParameter="{Binding Text, ElementName=NicknameInput}"/>
-                <Button Content="VOLTAR AO MENU" FontSize="20" Command="{Binding ShowMenuCommand}"/>
-            </StackPanel>
-
-            <!-- Controls Panel -->
-            <StackPanel Canvas.Left="300" Canvas.Top="250"
-                        Spacing="15"
-                        Visibility="{Binding GameState.CurrentState, Converter={StaticResource GameStateToVisibilityConverter}, ConverterParameter=Controls}">
-
-                <TextBlock Text="CONTROLES" Foreground="White" FontSize="40" FontWeight="Bold" HorizontalAlignment="Center"/>
-                <TextBlock Text="← → / A D : Mover Nave" Foreground="White" FontSize="24"/>
-                <TextBlock Text="ESPAÇO : Atirar" Foreground="White" FontSize="24"/>
-                <Button Content="VOLTAR AO MENU" FontSize="20" Command="{Binding ShowMenuCommand}" Margin="0,20,0,0"/>
-            </StackPanel>
-
-        </Canvas>
-
-        <!-- Converters as Resources -->
+        <!-- Os recursos ainda são necessários para o GameCanvasControl -->
         <Grid.Resources>
-            <local:GameStateToVisibilityConverter x:Key="GameStateToVisibilityConverter"/>
             <local:EntityToSkinConverter x:Key="EntityToSkinConverter"/>
         </Grid.Resources>
     </Grid>

@@ -1,0 +1,25 @@
+﻿<UserControl
+    x:Class="SpaceInvaders.Views.Controls.HighScoresControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="15">
+        <TextBlock Text="PONTUAÇÕES" Foreground="White" FontSize="40" FontWeight="Bold" HorizontalAlignment="Center"/>
+        <ListView ItemsSource="{Binding HighScores}" Background="Transparent" BorderThickness="0" Margin="0,20,0,0">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Width="300">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{Binding Nickname}" Foreground="White" FontSize="24" HorizontalAlignment="Left"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Score}" Foreground="White" FontSize="24" HorizontalAlignment="Right"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Button Content="VOLTAR AO MENU" FontSize="20" Command="{Binding ShowMenuCommand}" Margin="0,20,0,0"/>
+    </StackPanel>
+
+</UserControl>

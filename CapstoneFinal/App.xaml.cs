@@ -48,9 +48,7 @@ public partial class App : Application
                     
                     // Register ViewModels
                     services.AddTransient<GameViewModel>();
-                    services.AddTransient<MenuViewModel>();
                 })
-                .UseNavigation(ReactiveViewModelMappings.ViewModelMappings)
             );
         MainWindow = builder.Window;
 

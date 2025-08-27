@@ -1,0 +1,59 @@
+﻿<UserControl
+    x:Class="SpaceInvaders.Views.Controls.GameCanvasControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:SpaceInvaders.Views"
+    xmlns:models="using:SpaceInvaders.Models">
+
+    <Canvas Background="Black">
+        <!-- Pontuação -->
+        <TextBlock Text="{Binding DisplayScore}" Canvas.Left="10" Canvas.Top="10" Foreground="White" FontSize="20"/>
+
+        <!-- Nave do Jogador -->
+        <Rectangle Width="{Binding GameState.Player.Width}" Height="{Binding GameState.Player.Height}"
+                   Canvas.Left="{Binding GameState.Player.X}" Canvas.Top="{Binding GameState.Player.Y}"
+                   Fill="{Binding GameState.Player, Converter={StaticResource EntityToSkinConverter}}"/>
+
+        <!-- Inimigos -->
+        <ItemsControl ItemsSource="{Binding GameState.Enemies}">
+            <ItemsControl.ItemsPanel><ItemsPanelTemplate><Canvas/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="models:Enemy">
+                    <Rectangle Width="{Binding Width}" Height="{Binding Height}" Canvas.Left="{Binding X}" Canvas.Top="{Binding Y}"
+                               Fill="{Binding Converter={StaticResource EntityToSkinConverter}}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- Projéteis -->
+        <ItemsControl ItemsSource="{Binding GameState.Projectiles}">
+            <ItemsControl.ItemsPanel><ItemsPanelTemplate><Canvas/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="models:Projectile">
+                    <Rectangle Width="{Binding Width}" Height="{Binding Height}" Canvas.Left="{Binding X}" Canvas.Top="{Binding Y}" Fill="White"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- Escudos -->
+        <ItemsControl ItemsSource="{Binding GameState.ShieldParts}">
+            <ItemsControl.ItemsPanel><ItemsPanelTemplate><Canvas/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="models:ShieldPart">
+                    <Rectangle Width="{Binding Width}" Height="{Binding Height}" Canvas.Left="{Binding X}" Canvas.Top="{Binding Y}" Fill="{Binding HealthColor}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <!-- Inimigo Especial -->
+        <ContentControl Content="{Binding GameState.SpecialEnemy}">
+            <ContentControl.ContentTemplate>
+                <DataTemplate x:DataType="models:Enemy">
+                     <Rectangle Width="{Binding Width}" Height="{Binding Height}" Canvas.Left="{Binding X}" Canvas.Top="{Binding Y}"
+                               Fill="{Binding Converter={StaticResource EntityToSkinConverter}}"/>
+                </DataTemplate>
+            </ContentControl.ContentTemplate>
+        </ContentControl>
+    </Canvas>
+
+</UserControl>

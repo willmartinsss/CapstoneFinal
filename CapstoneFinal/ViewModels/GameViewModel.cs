@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using System.Collections.ObjectModel;
 
 namespace SpaceInvaders.ViewModels
 {
@@ -28,7 +29,8 @@ namespace SpaceInvaders.ViewModels
         private string _playerLives = "3";
         private double _canvasWidth = 800;
         private double _canvasHeight = 900;
-        
+        private ObservableCollection<ScoreEntry> _highScores = new();
+
         public GameState GameState => _gameState;
         public string DisplayScore 
         { 
@@ -40,7 +42,12 @@ namespace SpaceInvaders.ViewModels
             get => _playerLives; 
             private set { _playerLives = value; OnPropertyChanged(); }
         }
-        
+        public ObservableCollection<ScoreEntry> HighScores
+        {
+            get => _highScores;
+            private set { _highScores = value; OnPropertyChanged(); }
+        }
+
         public ICommand StartGameCommand { get; }
         public ICommand ShowMenuCommand { get; }
         public ICommand ShowHighScoresCommand { get; }
@@ -62,7 +69,11 @@ namespace SpaceInvaders.ViewModels
             
             StartGameCommand = new RelayCommand(StartNewGame);
             ShowMenuCommand = new RelayCommand(() => SwitchGameState(GameStateType.Menu));
-            ShowHighScoresCommand = new RelayCommand(() => SwitchGameState(GameStateType.HighScores));
+            ShowHighScoresCommand = new RelayCommand(async () =>
+            {
+                await LoadHighScoresAsync();
+                SwitchGameState(GameStateType.HighScores);
+            });
             ShowControlsCommand = new RelayCommand(() => SwitchGameState(GameStateType.Controls));
             SaveScoreCommand = new RelayCommand<string>(async nickname => await SaveScoreAsync(nickname));
         }
@@ -316,10 +327,17 @@ namespace SpaceInvaders.ViewModels
             OnPropertyChanged(nameof(GameState));
         }
         
+        private async Task LoadHighScoresAsync()
+        {
+            var scores = await _scoreService.LoadScoresAsync();
+            HighScores = new ObservableCollection<ScoreEntry>(scores);
+        }
+
         private async Task SaveScoreAsync(string? nickname)
         {
             if (string.IsNullOrEmpty(nickname)) nickname = "JOGADOR";
             await _scoreService.SaveScoreAsync(nickname, _gameState.Score);
+            await LoadHighScoresAsync();
             SwitchGameState(GameStateType.HighScores);
         }
         

@@ -3,7 +3,8 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Windows.System;
 using SpaceInvaders.ViewModels;
-using System.Threading.Tasks;
+using SpaceInvaders.Models;
+using System.ComponentModel;
 
 namespace SpaceInvaders.Views
 {
@@ -12,64 +13,98 @@ namespace SpaceInvaders.Views
         private bool _isMovingLeft = false;
         private bool _isMovingRight = false;
         
-        public GameViewModel GameViewModel { get; private set; }
+        public GameViewModel? Vm { get; private set; }
         
         public MainPage()
         {
             this.InitializeComponent();
+        }
+        
+        public void SetViewModel(GameViewModel viewModel)
+        {
+            Vm = viewModel;
+            this.DataContext = Vm; 
+            // Assina o evento para saber quando o ViewModel muda
+            Vm.PropertyChanged += ViewModel_PropertyChanged;
             this.Loaded += OnPageLoaded;
         }
         
-        // This will be called by Uno's DI system
-        public void SetViewModel(GameViewModel viewModel)
+        private void OnPageLoaded(object sender, RoutedEventArgs e)
         {
-            GameViewModel = viewModel;
-            this.DataContext = viewModel;
-        }
-        
-        private async void OnPageLoaded(object sender, RoutedEventArgs e)
-        {
-            // Set canvas size for the view model
-            GameViewModel?.SetCanvasSize(GameCanvas.ActualWidth, GameCanvas.ActualHeight);
-            
-            await Task.Delay(100);
+            if (Vm != null)
+            {
+                Vm.SetCanvasSize(this.ActualWidth, this.ActualHeight);
+                // Define a visibilidade inicial da UI
+                UpdateUIVisibility(Vm.GameState.CurrentState);
+            }
             this.Focus(FocusState.Programmatic);
+        }
+
+        /// <summary>
+        /// Chamado sempre que uma propriedade no GameViewModel muda.
+        /// </summary>
+        private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            // Se a propriedade que mudou foi o estado do jogo...
+            if (e.PropertyName == nameof(Vm.GameState))
+            {
+                // ...chama nosso método para atualizar a UI na thread correta.
+                DispatcherQueue.TryEnqueue(() => UpdateUIVisibility(Vm!.GameState.CurrentState));
+            }
+        }
+
+        /// <summary>
+        /// A nova lógica central para controlar qual tela é exibida.
+        /// </summary>
+        private void UpdateUIVisibility(GameStateType state)
+        {
+            // 1. Esconde todas as telas
+            MenuScreen.Visibility = Visibility.Collapsed;
+            GameCanvasScreen.Visibility = Visibility.Collapsed;
+            GameOverScreen.Visibility = Visibility.Collapsed;
+            HighScoresScreen.Visibility = Visibility.Collapsed;
+            ControlsScreen.Visibility = Visibility.Collapsed;
+
+            // 2. Mostra apenas a tela correta com base no estado
+            switch (state)
+            {
+                case GameStateType.Menu:
+                    MenuScreen.Visibility = Visibility.Visible;
+                    break;
+                case GameStateType.Playing:
+                    GameCanvasScreen.Visibility = Visibility.Visible;
+                    break;
+                case GameStateType.GameOver:
+                    GameOverScreen.Visibility = Visibility.Visible;
+                    break;
+                case GameStateType.HighScores:
+                    HighScoresScreen.Visibility = Visibility.Visible;
+                    break;
+                case GameStateType.Controls:
+                    ControlsScreen.Visibility = Visibility.Visible;
+                    break;
+            }
         }
         
         private async void Page_KeyDown(object sender, KeyRoutedEventArgs e)
         {
-            if (GameViewModel == null) return;
-            
+            if (Vm == null || Vm.GameState.CurrentState != GameStateType.Playing) return;
+
             switch (e.Key)
             {
-                case VirtualKey.Left:
-                case VirtualKey.A:
-                    _isMovingLeft = true;
-                    break;
-                case VirtualKey.Right:
-                case VirtualKey.D:
-                    _isMovingRight = true;
-                    break;
-                case VirtualKey.Space:
-                    await GameViewModel.ShootAsync();
-                    break;
+                case VirtualKey.Left: case VirtualKey.A: _isMovingLeft = true; break;
+                case VirtualKey.Right: case VirtualKey.D: _isMovingRight = true; break;
+                case VirtualKey.Space: await Vm.ShootAsync(); break;
             }
-            
-            GameViewModel.MovePlayer(_isMovingLeft, _isMovingRight);
+            Vm.MovePlayer(_isMovingLeft, _isMovingRight);
         }
         
         private void Page_KeyUp(object sender, KeyRoutedEventArgs e)
         {
             switch (e.Key)
             {
-                case VirtualKey.Left:
-                case VirtualKey.A:
-                    _isMovingLeft = false;
-                    break;
-                case VirtualKey.Right:
-                case VirtualKey.D:
-                    _isMovingRight = false;
-                    break;
+                case VirtualKey.Left: case VirtualKey.A: _isMovingLeft = false; break;
+                case VirtualKey.Right: case VirtualKey.D: _isMovingRight = false; break;
             }
         }
     }

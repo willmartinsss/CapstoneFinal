@@ -18,16 +18,13 @@ namespace SpaceInvaders.Models
             return new ImageBrush();
         }
         
-        public SolidColorBrush GetHealthColor()
+        public SolidColorBrush HealthColor => Health switch
         {
-            return Health switch
-            {
-                3 => new SolidColorBrush(Colors.LightGreen),
-                2 => new SolidColorBrush(Colors.YellowGreen),
-                1 => new SolidColorBrush(Colors.Orange),
-                _ => new SolidColorBrush(Colors.Red)
-            };
-        }
+            3 => new SolidColorBrush(Colors.LightGreen),
+            2 => new SolidColorBrush(Colors.YellowGreen),
+            1 => new SolidColorBrush(Colors.Orange),
+            _ => new SolidColorBrush(Colors.Red)
+        };
         
         public void TakeDamage()
         {

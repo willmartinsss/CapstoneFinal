@@ -1,0 +1,78 @@
+﻿<Page
+    x:Class="CapstoneSpaceInvader.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="Black"
+    KeyDown="Page_KeyDown"
+    KeyUp="Page_KeyUp">
+
+    <Page.Resources>
+        <ImageBrush x:Key="Alien40Skin" ImageSource="ms-appx:///Assets/images/alien3.png"/>
+        <ImageBrush x:Key="Alien20Skin" ImageSource="ms-appx:///Assets/images/alien2.png"/>
+        <ImageBrush x:Key="Alien10Skin" ImageSource="ms-appx:///Assets/images/alien1.png"/>
+        <ImageBrush x:Key="SpecialAlienSkin" ImageSource="ms-appx:///Assets/images/alienespecial.png"/>
+    </Page.Resources>
+
+    <Grid x:Name="RootGrid" Width="1080" Height="920">
+        <Canvas x:Name="GameCanvas"
+                IsTabStop="True">
+            <Rectangle x:Name="PlayerShip" Width="60" Height="40" Visibility="Collapsed"/>
+        </Canvas>
+
+        <StackPanel x:Name="GameUIPanel" Visibility="Collapsed">
+            <TextBlock x:Name="ScoreText" Text="PONTOS: 0" Foreground="White" FontSize="20" Margin="10"/>
+            <StackPanel x:Name="LivesPanel" Orientation="Horizontal" Spacing="5" HorizontalAlignment="Right" Margin="0,-45,10,0"/>
+        </StackPanel>
+
+        <StackPanel x:Name="MenuPanel" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="15" Visibility="Visible">
+            <TextBlock Text="SPACE" Foreground="White" FontSize="80" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,-30"/>
+            <TextBlock Text="INVADERS" Foreground="LightGreen" FontSize="80" FontWeight="Bold" HorizontalAlignment="Center"/>
+
+            <!-- Legenda de Pontuação -->
+            <StackPanel Spacing="10" Margin="0,20,0,20">
+                <StackPanel Orientation="Horizontal" Spacing="15" HorizontalAlignment="Center">
+                    <Rectangle Width="40" Height="22" Fill="{StaticResource SpecialAlienSkin}"/>
+                    <TextBlock Text="= ??? PONTOS" Foreground="White" FontSize="24" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="15" HorizontalAlignment="Center">
+                    <Rectangle Width="40" Height="30" Fill="{StaticResource Alien40Skin}"/>
+                    <TextBlock Text="= 40 PONTOS" Foreground="White" FontSize="24" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="15" HorizontalAlignment="Center">
+                    <Rectangle Width="40" Height="30" Fill="{StaticResource Alien20Skin}"/>
+                    <TextBlock Text="= 20 PONTOS" Foreground="White" FontSize="24" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="15" HorizontalAlignment="Center">
+                    <Rectangle Width="40" Height="30" Fill="{StaticResource Alien10Skin}"/>
+                    <TextBlock Text="= 10 PONTOS" Foreground="White" FontSize="24" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                </StackPanel>
+            </StackPanel>
+
+            <Button Content="INICIAR JOGO" FontSize="24" HorizontalAlignment="Center" Click="StartButton_Click"/>
+            <Button Content="PONTUAÇÕES" FontSize="24" HorizontalAlignment="Center" Click="HighScoresButton_Click"/>
+            <Button Content="CONTROLES" FontSize="24" HorizontalAlignment="Center" Click="ControlsButton_Click"/>
+        </StackPanel>
+
+        <!-- Outros painéis (GameOver, HighScores, Controls) continuam aqui... -->
+        <StackPanel x:Name="GameOverPanel" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="20" Visibility="Collapsed">
+            <TextBlock Text="FIM DE JOGO" Foreground="Red" FontSize="60" FontWeight="Bold"/>
+            <TextBlock x:Name="FinalScoreText" Foreground="White" FontSize="30" HorizontalAlignment="Center"/>
+            <TextBox x:Name="NicknameInput" Header="DIGITE SEU NOME:" Width="200"/>
+            <Button Content="SALVAR PONTUAÇÃO" FontSize="20" Click="SaveScoreButton_Click"/>
+            <Button Content="VOLTAR AO MENU" FontSize="20" Click="BackToMenuButton_Click"/>
+        </StackPanel>
+        <StackPanel x:Name="HighScoresPanel" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="15" Visibility="Collapsed">
+            <TextBlock Text="MELHORES PONTUAÇÕES" Foreground="White" FontSize="40" FontWeight="Bold"/>
+            <ListView x:Name="HighScoresListView" Background="Transparent" BorderThickness="0">
+                <ListView.ItemTemplate><DataTemplate><TextBlock Text="{Binding}" FontFamily="Consolas" FontSize="24" Foreground="White"/></DataTemplate></ListView.ItemTemplate>
+            </ListView>
+            <Button Content="VOLTAR AO MENU" FontSize="20" Margin="0,20,0,0" Click="BackToMenuButton_Click"/>
+        </StackPanel>
+        <StackPanel x:Name="ControlsPanel" VerticalAlignment="Center" HorizontalAlignment="Center" Spacing="15" Visibility="Collapsed">
+            <TextBlock Text="CONTROLES" Foreground="White" FontSize="40" FontWeight="Bold"/>
+            <TextBlock Text="← → / A D : Mover Nave" Foreground="White" FontSize="24"/>
+            <TextBlock Text="ESPAÇO : Atirar" Foreground="White" FontSize="24"/>
+            <Button Content="VOLTAR AO MENU" FontSize="20" Margin="0,20,0,0" Click="BackToMenuButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Page>
